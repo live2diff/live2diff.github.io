@@ -1,0 +1,360 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Live2Diff</title>
+    <link href="./css/style.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/bulma.min.css">
+    <link rel="stylesheet" href="./css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="icon" href="./images/favicon.svg">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./js/fontawesome.all.min.js"></script>
+    <script src="./js/bulma-carousel.min.js"></script>
+    <script src="./js/bulma-slider.min.js"></script>
+    <script src="./js/index.js"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+            startup: {
+                renderer: 'svg'
+              }
+        });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+</head>
+
+<body>
+    <div class="content">
+        <h1>Live2Diff: <strong>Live</strong> Stream Translation via Uni-directional Attention in Video
+            <strong>Diffusion</strong> Models
+        </h1>
+        <p id="authors">
+            <a href="https://github.com/LeoXing1996">Zhening Xing <sup>1</sup></a>
+            <a href="https://people.mpi-inf.mpg.de/~gfox/">Gereon Fox <sup>2</sup></a>
+            <a href="https://zengyh1900.github.io/">Yanhong Zeng <sup>1</sup></a>
+            <a href="https://xingangpan.github.io/">Xingang Pan <sup>3</sup></a>
+            <br>
+            <br>
+            <a href="https://people.mpi-inf.mpg.de/~elgharib/">Mohamed Elgharib <sup>2</sup></a>
+            <a href="https://www.mpi-inf.mpg.de/~theobalt/">Christian Theobalt <sup>2</sup></a>
+            <a href="https://chenkai.site/">Kai Chen <sup>1 †</sup></a>
+            <br>
+            <br>
+            <span style="font-size: 20px">
+                <sup>1</sup> Shanghai AI Lab &nbsp;&nbsp;
+                <sup>2</sup> Saarland Informatics Campus, Max Planck Institute for Informatics &nbsp;&nbsp;
+                <br>
+                <sup>3</sup> S-Lab, Nanyang Technological University &nbsp;&nbsp;
+                <sup> † </sup> Corresponding author
+            </span>
+            <br>
+            <br>
+            <a href="TODO" target="_blank"><img src="src/header/huggingface.svg" alt="huggingface" ,=""
+                    style="width: 21px;">[Comming Soon]</a>
+            <a href="TODO" target="_blank"><img src="src/header/arxiv.png" alt="arxiv" ,=""
+                    style="width: 21px;">[Paper]</a>
+            <a href="https://github.com/open-mmlab/Live2Diff" target="_blank"><img src="src/header/github.png"
+                    alt="github" ,="" style="width: 21px;">[Code]</a>
+        </p>
+        <p id="tldr">
+            TL;DR: <strong>Live2Diff</strong> is the <strong>first</strong> attempt that enables
+            <strong>uni-directional</strong> attention modeling to video diffusion models for live video steam
+            processing, and achieves 16FPS on RTX 4090 GPU.
+        </p>
+        <br>
+        <!-- <font size="+2">
+            <p style="text-align: center;">
+                <a href="https://arxiv.org/abs/2208.12242" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+                (<font color="#C70039">new!</font>) <a href="https://github.com/google/dreambooth"
+                    target="_blank">[Dataset]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="DreamBooth_files/bibtex.txt" target="_blank">[BibTeX]</a>
+            </p>
+        </font> -->
+    </div>
+
+    <!-- online-demo -->
+    <div class="content">
+        <h2 style="text-align: center;">
+            <!-- <strong>Web Demo For <u>Streaming</u> Video Translation on <u>RTX 4090 GPU</u></strong> -->
+            <!-- <strong>Live2Diff</strong>: Introduce <u>Live</u> Stream Video Translation <br> in<u>to</u> <u>Diff</u>usion pipeline -->
+            <u>Live</u> Stream Video Translation with <u>Diff</u>usion Pipeline
+        </h2>
+        <h4 style="text-align: center;">Demo on RTX 4090 GPU</h4>
+        <section class="hero is-light is-small">
+            <div class="hero-body">
+                <div class="container">
+                    <div id="results-carousel" class="carousel results-carousel">
+                        <div class="item item-leo-4">
+                            <video id="leo-4" autoplay controls muted loop playsinline width="65%">
+                                <source src="src/online-demo/leo-v2.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item item-leo-3">
+                            <video title="do you play Arknights😋?" id="leo-4" autoplay controls muted loop playsinline
+                                height="100%">
+                                <source src="src/online-demo/arknight-old-woman-v3.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item item-leo-1">
+                            <video title="do you play Arknights😋?" id="leo-4" autoplay controls muted loop playsinline
+                                height="100%">
+                                <source src="src/online-demo/arknight-ling.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+        </section>
+    </div>
+
+    <!-- teaser -->
+    <section class="hero is-light is-small">
+        <div class="hero-body">
+            <div class="container">
+                <div id="results-carousel" class="carousel results-carousel">
+                    <div class="item item-leo-4">
+                        <video poster="" id="leo-4" autoplay controls muted loop playsinline height="100%">
+                            <source src="src/teaser/leo-4.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-leo-3">
+                        <video poster="" id="leo-3" autoplay controls muted loop playsinline height="100%">
+                            <source src="src/teaser/leo-3.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-leo-1">
+                        <video poster="" id="leo-1" autoplay controls muted loop playsinline height="100%">
+                            <source src="src/teaser/leo-1.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-leo-2">
+                        <video poster="" id="leo-2" autoplay controls muted loop playsinline height="100%">
+                            <source src="src/teaser/leo-2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- <div class="content">
+        <h2 style="text-align: center;">
+            <strong>1-minute Video</strong>
+        </h2>
+        <iframe width="960" height="540" src="https://www.youtube.com/embed/A7EsYGSLpYA"
+            title="PIA: Your Personalized Image Animator via Plug-and-Play Modules in Text-to-Image Models"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div> -->
+    <div class="content">
+        <h2 style="text-align:center;">
+            <strong>Abstract</strong>
+        </h2>
+        <img src="src/attn-mask.png" , style="width: 100%;">
+        <figcaption></figcaption>
+        <p>
+            Large Language Models have shown remarkable efficacy in generating streaming data such as text and audio,
+            thanks to their temporally uni-directional attention mechanism, which models correlations between the
+            current token and <em><strong>previous</strong></em> tokens.
+            However, video streaming remains much less explored, despite a growing need for live video processing.
+            State-of-the-art video diffusion models leverage
+            <em><strong>bi</strong></em>-directional temporal attention to model the correlations between the current
+            frame and all the
+            <em><strong>surrounding</strong></em> (i.e. including <em><strong>future</strong></em>) frames, which
+            hinders them from processing streaming
+            videos.
+            To address this problem, we present <strong><span style="color: red;">Live2Diff</span> </strong>,
+            the first attempt at designing a video diffusion model
+            with uni-directional temporal attention, specifically targeting live streaming video translation.
+            Compared to previous works, our approach ensures temporal consistency and smoothness by correlating the
+            current frame with its predecessors and a few initial warmup frames, without any future frames.
+            Additionally, we use a highly efficient denoising scheme featuring a <em><strong>kv</strong></em>-cache
+            mechanism and pipelining, to
+            facilitate streaming video translation at interactive framerates.
+            Extensive experiments demonstrate the effectiveness of the proposed attention mechanism and pipeline,
+            outperforming previous methods in terms of temporal smoothness and/or efficiency.
+        </p>
+    </div>
+    <div class="content">
+        <h2 style="text-align:center;">
+            <strong>Motivation</strong>
+        </h2>
+        <video id="motivation" autoplay="" muted="" loop="" playsinline="" style="width: 100%;">
+            <source src="src/motivation-one-row.mp4" type="video/mp4">
+        </video>
+        <figcaption></figcaption>
+
+        <details>
+            <summary> See Image Comparison </summary>
+            <img src="src/motivation.jpg" , style="width: 100%;">
+            <p>
+                The color of each line represents the time in the X-T plot. <span style="color: red;">Red dashed
+                    boxes</span> denote regions suffering from
+                flickering and structural inconsistency, while <span style="color: blue;">blue boxes</span> indicate
+                areas where these issues are resolved.
+            </p>
+        </details>
+
+        <p>
+            The X-T slice shows how the pixel values at the same X-coordinate change over time T. The position of the
+            horizontal lines in the video corresponds to the X-coordinate positions visualized in the X-T slice.
+            (b), (c) and (d): Flickering and gradually in background region.
+            (e): with attention mechanism in our paper, background flickering is reduced.
+            <strong>(f, our full method)</strong>: the structure inconsistency issue is resolved by incorporating depth
+            conditioning.
+        </p>
+    </div>
+
+    <div class="content">
+        <h2 style="text-align:center;">
+            <strong>Method</strong>
+        </h2>
+        <h3 style="text-align: center;">
+            <strong>Overall Framework</strong>
+        </h3>
+        <img src="src/method/framework.jpg" , style="width: 100%;">
+        <figcaption></figcaption>
+        <p>
+            Our models take noisy latent $z_t^F$ and depth condition $y^F$ as input, where $t$ is the diffusion timestep
+            determines the noise strength, and F denotes the frame index. ⊕ denotes the element-wise add operation. (a)
+            In training stage, the number of frames in each video clip is equal to the context window size. We utilize a
+            specifically designed attention mask. This allows the initial frames to engage in bi-directional attention,
+            while the subsequent frames employ uni-directional attention. (b) In streaming inference stage, the UNet
+            takes samples equals to the total denoising timesteps as input, samples belong to different timesteps and
+            frames are grouped into one forward batch. The kv-cache is read and updated during temporal self-attention
+            operation.
+        </p>
+
+        <h3 style="text-align: center;">
+            <strong>Multi-timestep KV-Cache</strong>
+        </h3>
+        <video id="kv-cache" autoplay controls muted loop playsinline>
+            <source src="src/method/kv-cache-cropped.mp4" type="video/mp4">
+        </video>
+        <figcaption></figcaption>
+        <details>
+            <summary> See Illustration Version</summary>
+            <img src="src/method/kv-cache.jpg" , style="width: 100%;">
+        </details>
+        <p>
+            Example of our $kv$-cache for the first steps of a stream, with $L_w = T = 2$.
+            The colors of the squares indicate which frame they belong to.
+            $Q$, $K$, $V$ are the matrices used in temporal self-attention.
+            Each row belongs to one of the two denoising steps.
+            <span style="color: red;"> Red arrows</span> are overwrite operations.
+        </p>
+    </div>
+    <div class="content">
+        <h2 style="text-align:center;">
+            <strong>Results</strong>
+        </h2>
+        <h3 style="text-align:center;">
+            <strong>Qualitative Results</strong>
+        </h3>
+        <section class="hero is-light is-small">
+            <div class="hero-body">
+                <div class="container">
+                    <div id="results-carousel" class="carousel results-carousel">
+                        <div class="item">
+                            <video id="gallary" autoplay controls muted loop playsinline>
+                                <source src="src/gallary/1-comparison-flat2d-49.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item">
+                            <video id="gallary" autoplay controls muted loop playsinline>
+                                <source src="src/gallary/2-comparison-rev-zaum-80.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item">
+                            <video id="gallary" autoplay controls muted loop playsinline>
+                                <source src="src/gallary/3-comparison-flat2d-9.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item">
+                            <video id="gallary" autoplay controls muted loop playsinline>
+                                <source src="src/gallary/4-comparison-rev-zaum-30.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item">
+                            <video id="gallary" autoplay controls muted loop playsinline>
+                                <source src="src/gallary/5-comparison-flat2d-86.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item">
+                            <video id="gallary" autoplay controls muted loop playsinline>
+                                <source src="src/gallary/6-comparison-rev-zaum-60.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item">
+                            <video id="gallary" autoplay controls muted loop playsinline>
+                                <source src="src/gallary/7-comparison-flat2d-25.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="item">
+                            <video id="gallary" autoplay controls muted loop playsinline>
+                                <source src="src/gallary/8-comparison-rev-zaum-54.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <details>
+            <summary> See Image Comparison </summary>
+            <img src="src/results/results.jpg" , style="width: 100%;">
+            <p>
+                We compare the output quality of our method to a number of previous approaches:
+                (a) shows <strong>temporally adjacent frames</strong>, while
+                (b) shows frames <strong>temporally further apart</strong>. While our method preserves the spatial
+                structure of the input well, producing the desired output styles, previous methods tend to change even
+                the
+                semantic content of the frames.
+            </p>
+        </details>
+
+        <h3 style="text-align:center;">
+            <strong>Quantitative Results</strong>
+        </h3>
+        <img src="src/results/results-quan-v2.png" , style="width: 100%;">
+        <p>
+            We averaged scores over 90 sequences from the DAVIS-2017
+            dataset. Our method scores <strong>highest</strong> in Depth MSE and <u>second-highest</u> for temporal
+            smoothness CLIP scores and warp error. Our user study win rates confirm that our method produces the best
+            quality for both
+            aspects (i.e. all win rates over 50%).
+        </p>
+    </div>
+
+    <!-- <div class="content">
+        <h2>BibTex</h2>
+        <code style="color: black;"> @article{xing2024live2diff,<br>
+  &nbsp;&nbsp;title={Predict Next Frame: Streaming Video Translation via Uni-directional Video Diffusion Model},<br>
+  &nbsp;&nbsp;author={Zhening Xing,Gereon Fox,Yanhong Zeng,Xingang Pan,Mohamed Elgharib,Christian Theobalt,Kai Chen},<br>
+  &nbsp;&nbsp;booktitle={arXiv preprint arxiv:TODO},<br>
+  &nbsp;&nbsp;year={2024}<br>
+  } </code>
+    </div> -->
+    <div class="content">
+        <p>
+            This website is licensed under a <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+        </p>
+        <p>
+            Thanks to <a href="https://jeff-liangf.github.io/projects/streamv2v/">StreamV2V</a> for demo inspiration,
+            and
+            <a href="https://dreambooth.github.io/">DreamBooth</a> and <a href="https://nerfies.github.io/">Nerfies</a>
+            for
+            website template.
+        </p>
+    </div>
+</body>
+
+</html>
